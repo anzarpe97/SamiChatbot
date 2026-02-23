@@ -10,7 +10,7 @@
 En una consola **Bash** de PythonAnywhere, ejecuta:
 ```bash
 mkvirtualenv --python=python3.10 venv
-pip install pyTelegramBotAPI python-dotenv requests
+pip install pyTelegramBotAPI python-dotenv requests yt-dlp
 ```
 
 ### 3. Archivo .env
