@@ -6,7 +6,9 @@ def load_knowledge():
     Carga el archivo knowledge.json y retorna su contenido como un string formateado
     para ser incluido en el prompt del sistema.
     """
-    knowledge_path = os.path.join(os.getcwd(), 'knowledge.json')
+    # Get the directory where this script is located
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    knowledge_path = os.path.join(BASE_DIR, 'data', 'knowledge.json')
     
     if not os.path.exists(knowledge_path):
         return ""

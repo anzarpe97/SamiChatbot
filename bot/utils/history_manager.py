@@ -4,7 +4,7 @@ from datetime import datetime
 
 # Get the directory where this script is located
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-HISTORY_FILE = os.path.join(BASE_DIR, "bot_history.json")
+HISTORY_FILE = os.path.join(BASE_DIR, "data", "bot_history.json")
 
 def save_message(user_id, role, content, first_name=None, username=None):
     """

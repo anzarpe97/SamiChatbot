@@ -21,18 +21,10 @@ def register_sweet_handler(bot):
         bot.send_message(message.chat.id, wrap_message(response))
         save_message(message.chat.id, "assistant", response)
 
-    @bot.message_handler(func=lambda message: message.text == "Instagram Downloader")
-    def instagram_info_handler(message):
-        info_text = (
-            "Of course, my love! 🌹\n\n"
-            "Just **send me or paste the Instagram link** (Reel, Post or Video) here in the chat, "
-            "and I will download it for you instantly. 😘"
-        )
-        bot.send_message(message.chat.id, wrap_message(info_text))
 
     @bot.message_handler(func=lambda message: True)
     def chat_handler(message):
-        if message.text in ["Convert Currency", "Help", "Sweet Message", "Instagram Downloader", "❌ Cancel", "USD ⮕ KRW", "KRW ⮕ USD"]:
+        if message.text in ["Convert Currency", "Help", "Sweet Message", "⏰ Reminders", "❌ Cancel", "USD ⮕ KRW", "KRW ⮕ USD"]:
             return
             
         bot.send_chat_action(message.chat.id, 'typing')
