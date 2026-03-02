@@ -3,7 +3,7 @@ import threading
 import time
 import random
 from datetime import datetime
-from config import TOKEN
+from config import TOKEN, BOT_TIMEZONE
 from bot.handlers.start import register_start_handler
 from bot.handlers.help import register_help_handler
 from bot.handlers.sweet import register_sweet_handler
@@ -11,6 +11,7 @@ from bot.conversation.currency_conv import register_currency_handlers
 from bot.handlers.reminder import register_reminder_handlers
 from bot.utils.reminder_manager import load_reminders, update_reminder_last_sent
 from bot.utils.random_messages_manager import get_random_content, get_all_users
+from bot.handlers.admin import register_admin_handlers
 
 def random_message_worker(bot):
     """ Sends a random sweet message to users every few hours. """
@@ -26,8 +27,19 @@ def random_message_worker(bot):
                     if msg_type in ['text', 'ai']:
                         bot.send_message(chat_id, content)
                     elif msg_type == 'voice':
-                        with open(content, 'rb') as voice:
-                            bot.send_voice(chat_id, voice)
+                        try:
+                            with open(content, 'rb') as voice:
+                                bot.send_voice(chat_id, voice)
+                        except telebot.apihelper.ApiTelegramException as e:
+                            if "VOICE_MESSAGES_FORBIDDEN" in str(e):
+                                print(f"Voice forbidden for {chat_id}, falling back to text.")
+                                # Fallback to a sweet text message if voice is blocked
+                                _, fallback_content = get_random_content(chat_id)
+                                # Ensure we don't recursive loop into voice again
+                                if _ == 'voice': fallback_content = random.choice(PREDEFINED_MESSAGES)
+                                bot.send_message(chat_id, fallback_content)
+                            else:
+                                raise e
                             
                     print(f"Sent random {msg_type} message to {chat_id}")
         except Exception as e:
@@ -39,7 +51,7 @@ def random_message_worker(bot):
 def reminder_worker(bot):
     while True:
         try:
-            now = datetime.now()
+            now = datetime.now(BOT_TIMEZONE)
             current_time = now.strftime("%H:%M")
             current_date = now.strftime("%Y-%m-%d")
             
@@ -68,7 +80,9 @@ def reminder_worker(bot):
         except Exception as e:
             print(f"Error in reminders worker: {e}")
             
-        time.sleep(60 - datetime.now().second)
+        time.sleep(60 - datetime.now(BOT_TIMEZONE).second)
+
+from bot.utils.update_manager import auto_update_worker, send_startup_notification
 
 def main():
     bot = telebot.TeleBot(TOKEN)
@@ -79,6 +93,10 @@ def main():
     register_currency_handlers(bot)
     register_reminder_handlers(bot)
     register_sweet_handler(bot)
+    register_admin_handlers(bot)
+
+    # Send startup notification to all users
+    send_startup_notification(bot, get_all_users)
 
     # Start the reminder thread
     reminder_thread = threading.Thread(target=reminder_worker, args=(bot,), daemon=True)
@@ -88,8 +106,29 @@ def main():
     random_thread = threading.Thread(target=random_message_worker, args=(bot,), daemon=True)
     random_thread.start()
 
+    # Start the auto-update thread (checks every 10 minutes)
+    update_thread = threading.Thread(target=auto_update_worker, args=(600,), daemon=True)
+    update_thread.start()
+
     print("The bot running using pyTelegramBotAPI")
-    bot.infinity_polling()
+    
+    # Custom polling loop for better error resilience
+    while True:
+        try:
+            # We use polling instead of infinity_polling to manage the loop ourselves
+            # non_stop=True ensures it doesn't stop on internal errors
+            bot.polling(non_stop=True, timeout=60, long_polling_timeout=20)
+        except Exception as e:
+            error_msg = str(e).lower()
+            # If it's a network error (DNS failure, connection timeout, etc.)
+            if any(key in error_msg for key in ["getaddrinfo", "nameresolution", "connection pool", "timeout", "connectionerror"]):
+                print(f"Network error detected: {e}")
+                print("Waiting 30 seconds before retrying to allow connection to stabilize...")
+                time.sleep(30)
+            else:
+                # For other errors, log and wait briefly
+                print(f"Polling error: {e}")
+                time.sleep(10)
 
 if __name__ == '__main__':
     main()

@@ -11,6 +11,14 @@
                 "Sunday"
             ],
             "last_sent": ""
+        },
+        {
+            "id": "ce72f583-b28b-41ba-be72-cf3477f995e1",
+            "concept": "Drink water",
+            "time": "00:01",
+            "frequency": "Once",
+            "days": null,
+            "last_sent": ""
         }
     ]
 }

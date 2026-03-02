@@ -35,7 +35,8 @@ def get_random_content(chat_id):
     Returns a tuple (type, content)
     type: 'text', 'voice', or 'ai'
     """
-    choice = random.choices(['text', 'voice', 'ai'], weights=[0.4, 0.2, 0.4])[0]
+    # Reduced voice weight and added safety
+    choice = random.choices(['text', 'voice', 'ai'], weights=[0.45, 0.1, 0.45])[0]
     
     if choice == 'voice':
         voice = get_random_voice_note()

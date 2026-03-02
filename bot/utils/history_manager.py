@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+from config import BOT_TIMEZONE
 
 # Get the directory where this script is located
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -41,7 +42,7 @@ def save_message(user_id, role, content, first_name=None, username=None):
 
     # Add new message
     new_msg = {
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": datetime.now(BOT_TIMEZONE).isoformat(),
         "role": role,
         "content": content
     }
