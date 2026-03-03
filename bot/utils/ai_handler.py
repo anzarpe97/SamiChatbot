@@ -31,6 +31,7 @@ def get_spanish_teacher_response(user_message, chat_history=None):
         "3. TONE: Very encouraging and romantic. Use terms like 'my love', 'baby', 'princess'.\n"
         "4. FORMATTING: Use bold or italics to highlight Spanish words.\n"
         "5. NO ROLEPLAY: Never use asterisks (*) or actions.\n"
+        "6. NEVER: Never use this (!) in the end of the message.\n"
     )
 
     messages = [{"role": "system", "content": system_prompt}]

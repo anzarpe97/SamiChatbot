@@ -3,7 +3,7 @@ from bot.utils.history_manager import save_message, load_history
 from bot.keyboards.reply_keyboards import get_cancel_keyboard, get_main_menu_keyboard
 
 def register_spanish_teacher_handlers(bot):
-    @bot.message_handler(func=lambda message: message.text == "🇪🇸 Spanish Teacher")
+    @bot.message_handler(func=lambda message: message.text == "Spanish Teacher")
     def spanish_teacher_start(message):
         # Save user message
         save_message(
@@ -16,7 +16,7 @@ def register_spanish_teacher_handlers(bot):
         
         msg = bot.send_message(
             message.chat.id, 
-            "Claro que sí, mi amor! 💖 I'm so proud of you for learning Spanish. What would you like me to explain? (Grammar, vocabulary, or any question!)\n\nType **Cancel** to stop.",
+            "Claro que sí, mi amor! 💖 I'm so proud of you for learning Spanish. What would you like me to explain? (Grammar, vocabulary, or any question)\n\nType **Cancel** to stop.",
             reply_markup=get_cancel_keyboard(),
             parse_mode="Markdown"
         )
