@@ -12,6 +12,7 @@ from bot.handlers.reminder import register_reminder_handlers
 from bot.utils.reminder_manager import load_reminders, update_reminder_last_sent
 from bot.utils.random_messages_manager import get_random_content, get_all_users
 from bot.handlers.admin import register_admin_handlers
+from bot.handlers.spanish_teacher import register_spanish_teacher_handlers
 
 def random_message_worker(bot):
     """ Sends a random sweet message to users every few hours. """
@@ -92,8 +93,9 @@ def main():
     register_help_handler(bot)
     register_currency_handlers(bot)
     register_reminder_handlers(bot)
-    register_sweet_handler(bot)
     register_admin_handlers(bot)
+    register_spanish_teacher_handlers(bot)
+    register_sweet_handler(bot)
 
     # Send startup notification to all users
     send_startup_notification(bot, get_all_users)

@@ -24,7 +24,7 @@ def register_sweet_handler(bot):
 
     @bot.message_handler(func=lambda message: True)
     def chat_handler(message):
-        if message.text in ["Convert Currency", "Help", "Sweet Message", "⏰ Reminders", "❌ Cancel", "USD ⮕ KRW", "KRW ⮕ USD"]:
+        if message.text in ["Convert Currency", "Help", "Sweet Message", "⏰ Reminders", "❌ Cancel", "USD ⮕ KRW", "KRW ⮕ USD", "🇪🇸 Spanish Teacher"]:
             return
             
         bot.send_chat_action(message.chat.id, 'typing')
